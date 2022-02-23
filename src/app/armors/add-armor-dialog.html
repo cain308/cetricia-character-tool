@@ -1,0 +1,107 @@
+<h1 mat-dialog-title>Add Armor To Inventory</h1>
+
+<mat-slide-toggle [(ngModel)]="data.isCustom">Custom Item?</mat-slide-toggle>
+
+<!-- for basic, readonly view -->
+<div mat-dialog-content *ngIf="!data.isCustom">
+  <mat-form-field>
+    <mat-label>Armor Type</mat-label>
+    <input
+      readonly="true"
+      matInput
+      [(ngModel)]="data.originalRef['Armor Type']"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Weight</mat-label>
+    <input
+      readonly="true"
+      matInput
+      [(ngModel)]="data.originalRef['approx weight']"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Notes</mat-label>
+    <input matInput [(ngModel)]="data.notes" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Count</mat-label>
+    <input matInput [(ngModel)]="data.numItems" />
+  </mat-form-field>
+</div>
+
+<!-- for custom, editable view -->
+<div mat-dialog-content *ngIf="data.isCustom">
+  <mat-form-field>
+    <mat-label>Armor Type</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Armor Type']"
+      placeholder="{{data.originalRef['Armor Type']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Classification</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Classification']"
+      placeholder="{{data.originalRef['Classification']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>approx weight</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['approx weight']"
+      placeholder="{{data.originalRef['approx weight']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>approx cost ELP</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['approx cost ELP']"
+      placeholder="{{data.originalRef['approx cost ELP']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>commonality</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['commonality']"
+      placeholder="{{data.originalRef['commonality']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Base AV</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Base AV']"
+      placeholder="{{data.originalRef['Base AV']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Base PR</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Base PR']"
+      placeholder="{{data.originalRef['Base PR']}}"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Notes</mat-label>
+    <input matInput [(ngModel)]="data.notes" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Count</mat-label>
+    <input matInput [(ngModel)]="data.numItems" />
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>
+    Add Armor
+  </button>
+</div>

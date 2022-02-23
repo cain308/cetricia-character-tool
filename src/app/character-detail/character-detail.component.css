@@ -1,0 +1,12 @@
+.skill-card {
+  max-width: 300px;
+}
+
+.mat-cell,
+.mat-header-cell {
+  min-height: 48px;
+}
+
+.inventory-cell {
+  background-color: rgb(255, 182, 193);
+}

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Choose Skill to Add</h1>
+<div mat-dialog-actions>
+  <button mat-button *ngFor="let sn of data.nodes"
+    [mat-dialog-close]="sn" cdkFocusInitial>{{getNameForSkill(sn)}}</button>
+  <!--
+  <div *ngFor="let skillNode of data.nodes">
+    <button mat-button [mat-dialog-close]="skillNode" cdkFocusInitial>{{skillNode.getParamaterizedName()}}</button>
+  </div>
+  -->
+  <button mat-button (click)="onNoClick()">Cancel</button>
+</div>

@@ -1,0 +1,232 @@
+<h1 mat-dialog-title>Add Weapon To Inventory</h1>
+
+<mat-slide-toggle [(ngModel)]="data.isCustom">Custom Item?</mat-slide-toggle>
+
+<!-- for basic, readonly view -->
+<div mat-dialog-content *ngIf="!data.isCustom">
+  <mat-form-field>
+    <mat-label>Weapon Name</mat-label>
+    <input readonly="true" matInput [(ngModel)]="data.originalRef.Name" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Weight</mat-label>
+    <input readonly="true" matInput [(ngModel)]="data.originalRef.Weight" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Notes</mat-label>
+    <input matInput [(ngModel)]="data.notes" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Count</mat-label>
+    <input matInput [(ngModel)]="data.numItems" />
+    <!--
+    <md-input-container>
+      <input matInput type="number" [(ngModel)]="data.numItems" />
+    </md-input-container>
+    -->
+  </mat-form-field>
+</div>
+
+<!-- for custom, editable view -->
+<div mat-dialog-content *ngIf="data.isCustom">
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Name']"
+      placeholder="{{data.originalRef['Name']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Cost ep</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Cost ep']"
+      placeholder="{{data.originalRef['Cost ep']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Weight</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Weight']"
+      placeholder="{{data.originalRef['Weight']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Size</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Size']"
+      placeholder="{{data.originalRef['Size']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Range</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Range']"
+      placeholder="{{data.originalRef['Range']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Speed, Missle</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Speed, Missle']"
+      placeholder="{{data.originalRef['Speed, Missle']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Speed, Melee</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Speed, Melee']"
+      placeholder="{{data.originalRef['Speed, Melee']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Speed, Readied</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Speed, Readied']"
+      placeholder="{{data.originalRef['Speed, Readied']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Protection</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Protection']"
+      placeholder="{{data.originalRef['Protection']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Threat Range</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Threat Range']"
+      placeholder="{{data.originalRef['Threat Range']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>STN, 1H</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['STN, 1H']"
+      placeholder="{{data.originalRef['STN, 1H']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>STN, 2H</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['STN, 2H']"
+      placeholder="{{data.originalRef['STN, 2H']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>STMOD</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['STMOD']"
+      placeholder="{{data.originalRef['STMOD']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>CDN, 1H</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['CDN, 1H']"
+      placeholder="{{data.originalRef['CDN, 1H']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>CDN, 2H</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['CDN, 2H']"
+      placeholder="{{data.originalRef['CDN, 2H']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>CDMOD</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['CDMOD']"
+      placeholder="{{data.originalRef['CDMOD']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Damage Dice</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Damage Dice']"
+      placeholder="{{data.originalRef['Damage Dice']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Dividing Die</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.overrideObject['Dividing Die']"
+      placeholder="{{data.originalRef['Dividing Die']}}"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Notes</mat-label>
+    <input matInput [(ngModel)]="data.notes" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Count</mat-label>
+    <input matInput [(ngModel)]="data.numItems" />
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>
+    Add Weapon
+  </button>
+</div>
+
+<!--
+export class HeldItem {
+  // if it's a straight purchase or discovery of a stock item
+  originalItemKey = '';
+  // a convenient direct reference to the original object we'll be using
+  originalRef;
+  // if it's a found item that has not been identified, and if so
+  // what its id code is
+  isIdentified = true;
+  idCode;
+  // if this is a custom item, we'll want to know
+  isCustom = false;
+  // these are the overrides to the default stats.  Anything not in
+  // here will use the original values
+  overrideObject = {};
+  // notes about the item.  Could be flavortext, where it was found, or
+  // really anything
+  notes = '';
+}
+
+
+  "Name": "\1",
+"Cost ep": "\2",
+"Weight": "\3",
+"Size": "\4",
+"Range": "\5",
+"Speed, Missle": "\6",
+"Speed, Melee": "\7",
+"Speed, Readied": "\8",
+"Protection": "\9",
+"Threat Range": "\10",
+"STN, 1H": "\11",
+"STN, 2H": "\12",
+"STMOD": "\12",
+"CDN, 1H": "\14",
+"CDN, 2H": "\15",
+"CDMOD": "\16",
+"Damage Dice": "\17",
+"Dividing Die": "\18",
+-->

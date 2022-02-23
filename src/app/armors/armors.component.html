@@ -1,0 +1,126 @@
+<mat-form-field>
+  <mat-label>Filter Armor Sets</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Silk" />
+</mat-form-field>
+
+<!--
+        'Add',
+      'Armor Type',
+      'Classification',
+      'approx weight',
+      'approx cost ELP',
+      'commonality',
+      'Base AV',
+      'Base PR',
+
+      
+-->
+
+<mat-table matSort [dataSource]="sortedData" (matSortChange)="sortData($event)">
+  <ng-container matColumnDef="Armor Type">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Armor Type
+    </th>
+    <td mat-cell *matCellDef="let armor" align="center">
+      {{ armor['Armor Type'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Classification">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Classification
+    </th>
+    <td mat-cell *matCellDef="let armor" align="center">
+      {{ armor['Classification'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="approx weight">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Weight
+    </th>
+    <td mat-cell *matCellDef="let armor" align="center">
+      {{ armor['approx weight'] }}
+    </td></ng-container
+  >
+
+  <ng-container matColumnDef="approx cost ELP">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Cost
+    </th>
+    <td mat-cell *matCellDef="let armor" align="center">
+      {{ armor['approx cost ELP'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="commonality">
+    <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width">
+      Commonality
+    </th>
+    <td mat-cell *matCellDef="let armor" align="center">
+      {{ armor['commonality'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Base AV">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Base AV
+    </th>
+    <td mat-cell *matCellDef="let armor" align="center">
+      {{ armor['Base AV'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Base PR">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Base PR
+    </th>
+    <td mat-cell *matCellDef="let armor" align="center">
+      {{ armor['Base PR'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Add">
+    <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width">
+      Add
+    </th>
+    <td mat-cell *matCellDef="let armor" align="center">
+      <button mat-mini-fab color="primary" (click)="addArmor(armor)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="headers"></tr>
+  <tr mat-row *matRowDef="let myRowData; columns: headers"></tr>
+</mat-table>

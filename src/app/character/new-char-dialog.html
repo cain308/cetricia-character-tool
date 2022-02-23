@@ -1,0 +1,39 @@
+<h1 mat-dialog-title>Enter the new character's data</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="data.name">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>strength</mat-label>
+    <input matInput [(ngModel)]="data.strength">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>intelligence</mat-label>
+    <input matInput [(ngModel)]="data.intelligence">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>wisdom</mat-label>
+    <input matInput [(ngModel)]="data.wisdom">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>coordination</mat-label>
+    <input matInput [(ngModel)]="data.coordination">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>health</mat-label>
+    <input matInput [(ngModel)]="data.health">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>charisma</mat-label>
+    <input matInput [(ngModel)]="data.charisma">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>appearance</mat-label>
+    <input matInput [(ngModel)]="data.appearance">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Add Character</button>
+</div>

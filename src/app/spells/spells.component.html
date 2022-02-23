@@ -1,0 +1,181 @@
+<style>
+  .stat-narrow-column-width {
+    min-width: 30px;
+    text-align: center;
+  }
+</style>
+
+<div style="display: flex">
+  <mat-list>
+    <mat-list-item>
+      <mat-form-field>
+        <mat-label>Choose a spell school</mat-label>
+        <mat-select
+          [(ngModel)]="selectedSchool"
+          (ngModelChange)="onSelectedSchoolChanged()"
+        >
+          <mat-option *ngFor="let school of allSpellSchools" [value]="school">
+            {{ school.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-form-field>
+        <mat-label>Filter Spells</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Air" />
+      </mat-form-field>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-button-toggle-group
+        multiple
+        name="visibleColumns"
+        aria-label="Font Style"
+      >
+        <mat-button-toggle value="costs" (click)="toggleCosts()"
+          >Toggle Viewing Cost Breakdown</mat-button-toggle
+        >
+        <mat-button-toggle value="description" (click)="toggleDescription()"
+          >Toggle Viewing Desciption</mat-button-toggle
+        >
+        <mat-button-toggle value="etc" (click)="toggleAssorted()"
+          >Toggle Viewing Rest</mat-button-toggle
+        >
+      </mat-button-toggle-group>
+    </mat-list-item>
+  </mat-list>
+  <!--
+  <mat-divider [vertical]="true"></mat-divider>
+  -->
+  <div>
+    <button mat-raised-button color="primary" (click)="addSpellsToSpellbook()">
+      Add to Spell Book
+    </button>
+    <!--
+    This is another item that sits to the right of the list, hopefully.  It'll show the cost breakdowns
+    -->
+    <p>If the selected spells were in your spell book...</p>
+    <p>
+      {{ showSelectedSpellCosts().summary }}
+    </p>
+    <div *ngFor="let cost of showSelectedSpellCosts().totals">
+      {{ cost }}
+    </div>
+    <!--
+    <mat-list >
+      <mat-list-item *ngFor="let cost of showSelectedSpellCosts().totals">
+        {{ cost }}
+      </mat-list-item>
+    </mat-list>
+    -->
+  </div>
+</div>
+<mat-divider></mat-divider>
+
+<mat-table
+  matSort
+  dynamicHeight
+  [dataSource]="sortedData"
+  (matSortChange)="sortData($event)"
+>
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox
+        (change)="$event ? masterToggle() : null"
+        [checked]="selection.hasValue() && isAllSelected()"
+        [indeterminate]="selection.hasValue() && !isAllSelected()"
+        [aria-label]="checkboxLabel()"
+      >
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox
+        (click)="$event.stopPropagation()"
+        (change)="$event ? selection.toggle(row) : null"
+        [checked]="selection.isSelected(row)"
+        [aria-label]="checkboxLabel(row)"
+      >
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="SPELL NAME">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Spell Name
+    </th>
+    <td mat-cell *matCellDef="let spell" align="center">
+      {{ spell['SPELL NAME'] }}
+    </td>
+  </ng-container>
+
+  <!-- Total Cost is special -->
+  <ng-container matColumnDef="TOTAL COST">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Total Cost
+    </th>
+    <td mat-cell *matCellDef="let spell" align="center">
+      {{ calculateTotalSpellCost(spell) }}
+    </td>
+  </ng-container>
+
+  <!-- Description columns -->
+  <ng-container
+    [matColumnDef]="column"
+    *ngFor="let column of descriptionHeaders"
+  >
+    <th mat-header-cell *matHeaderCellDef>{{ toTitleCase(column) }}</th>
+    <td mat-cell *matCellDef="let spell">{{ spell[column] }}</td>
+  </ng-container>
+
+  <!-- Cost columns -->
+  <ng-container [matColumnDef]="column" *ngFor="let column of costHeaders">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>
+      {{ makeBetterCostName(column) }}
+    </th>
+    <td mat-cell *matCellDef="let spell">{{ spell[column] }}</td>
+  </ng-container>
+
+  <!-- Assorted columns -->
+  <ng-container [matColumnDef]="column" *ngFor="let column of assortedHeaders">
+    <th mat-header-cell *matHeaderCellDef>{{ toTitleCase(column) }}</th>
+    <td mat-cell *matCellDef="let spell">{{ spell[column] }}</td>
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td
+      mat-cell
+      *matCellDef="let element"
+      [attr.colspan]="displayedHeaders.length"
+    >
+      <div
+        class="example-element-detail"
+        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'"
+      >
+        <div class="example-element-description">
+          {{ element['DESCRIPTION'] }}
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedHeaders; sticky: true"></tr>
+  <tr
+    mat-row
+    *matRowDef="let element; columns: displayedHeaders"
+    [class.example-expanded-row]="expandedElement === element"
+    (click)="selection.toggle(element); checkElement(element)"
+    (click)="expandedElement = expandedElement === element ? null : element"
+  ></tr>
+</mat-table>

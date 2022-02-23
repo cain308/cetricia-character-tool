@@ -1,0 +1,563 @@
+<style>
+    /*
+  .mat-tree-node {
+    min-height: 30px;
+  }*/
+
+    .mat-tree-node {
+      min-height: 1.3em !important;
+      height: 1.3em;
+    }
+
+    .skill-category-box {
+      min-width: 60px;
+      /* width: 100px; */
+      padding-right: 5px;
+    }
+
+    .skill-name-box {
+      min-width: 60px;
+      padding-right: 5px;
+      font-weight: bold;
+    }
+
+    /*
+    mat-card.basic-card {
+    background-color: blue;
+    max-width: 550px;
+    margin:0;
+    padding:0 !important;
+    }*/
+    .show-inventory-details {
+      max-width: 800px;
+      background-color: #FFE5CC;
+    }
+</style>
+
+<mat-card class="show-inventory-details">
+  <mat-card-subtitle>Character Details</mat-card-subtitle>
+  <mat-card-title>{{ globals.currentCharacter.name }}</mat-card-title>
+  <mat-card-content>
+    <p>Total Raw XP {{ globals.currentCharacter.totalRawXP }}</p>
+  </mat-card-content>
+  <mat-card-content>
+    <p>Unspent XP {{ globals.currentCharacter.unspentGenericXP }}</p>
+  </mat-card-content>
+  <mat-card-content>
+    <p>
+      Encumbrance: {{ globals.currentCharacter.getInventoryWeight() }} /
+      {{ globals.currentCharacter.weightPossible }} ({{
+        globals.currentCharacter.getEncumbrancePercent()
+      }}%)
+    </p>
+    <p>
+      Effective Speed:
+      {{
+        globals.currentCharacter.baseSpeed *
+          (1 - globals.currentCharacter.getEncumbrancePercent())
+      }}
+      out of
+      {{ globals.currentCharacter.baseSpeed }}
+    </p>
+  </mat-card-content>
+
+  <mat-divider inset></mat-divider>
+  <mat-card-content>
+    <p>INVENTORY</p>
+  </mat-card-content>
+  <mat-table
+    matSort
+    [dataSource]="inventoryItems"
+    style="border-collapse: collapse;  border: 1px solid gray;"
+  >
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox
+          (change)="$event ? masterToggle() : null"
+          [checked]="selectedInventoryItem.hasValue() && isAllSelected()"
+          [indeterminate]="selectedInventoryItem.hasValue() && !isAllSelected()"
+          [aria-label]="checkboxLabel()"
+        >
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox
+          (click)="$event.stopPropagation()"
+          (change)="$event ? selectedInventoryItem.toggle(row) : null"
+          [checked]="selectedInventoryItem.isSelected(row)"
+          [aria-label]="checkboxLabel(row)"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Name">
+      <th
+        mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef
+        class="stat-narrow-column-width"
+      >
+        Name
+      </th>
+      <td mat-cell *matCellDef="let item" align="center">
+        {{ item.getName() }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Count">
+      <th
+        mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef
+        class="stat-narrow-column-width"
+      >
+        Count
+      </th>
+      <td mat-cell *matCellDef="let item" align="center">
+        {{ item.numItems }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Total Weight">
+      <th
+        mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef
+        class="stat-narrow-column-width"
+      >
+        Total Weight
+      </th>
+      <td mat-cell *matCellDef="let item" align="center">
+        {{ item.getTotalWeight() }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Category">
+      <th
+        mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef
+        class="stat-narrow-column-width"
+      >
+        Category
+      </th>
+      <td mat-cell *matCellDef="let item" align="center">
+        {{ item.getCategory() }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Notes">
+      <th
+        mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef
+        class="stat-narrow-column-width"
+      >
+        Notes
+      </th>
+      <td mat-cell *matCellDef="let item" align="center">
+        {{ item.notes }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="inventoryHeaders"></tr>
+    <tr
+      mat-row
+      inventory-cell
+      *matRowDef="let myRowData; columns: inventoryHeaders"
+      (click)="selectedInventoryItem.toggle(element)"
+      (click)="expandedElement = expandedElement === element ? null : element"
+    ></tr>
+  </mat-table>
+</mat-card>
+
+<p>
+  <!-- DISPLAY USEFUL DETAILS ABOUT THE CURRENT INVENTORY ITEM -->
+  <mat-card class="show-inventory-details" *ngIf="getSelectedInvItem()">
+    <mat-card-subtitle>{{
+      getSelectedInvItem().getCategory()
+    }}</mat-card-subtitle>
+    <mat-card-title>{{ getSelectedInvItem().getName() }}</mat-card-title>
+    <mat-card-content *ngIf="getSelectedInvItem().notes">
+      <p>{{ getSelectedInvItem().notes }}</p>
+    </mat-card-content>
+    <mat-divider inset></mat-divider>
+    <mat-card-content *ngIf="getSelectedInvItem().getCategory() == 'WEAPON'">
+      <mat-slide-toggle [(ngModel)]="is2hView">Show 2H</mat-slide-toggle>
+      <p *ngIf="!is2hView">
+        1H Chance to hit: {{ computeSelectedChanceToHit1H() }} =>
+        {{ describeSelectedChanceToHit1H() }}
+      </p>
+      <p *ngIf="is2hView">
+        2h Chance to hit: {{ computeSelectedChanceToHit2H() }} =>
+        {{ describeSelectedChanceToHit2H() }}
+      </p>
+      <p *ngIf="!is2hView">
+        1H Damage Bonus: {{ computeDamageBonus1H() }} =>
+        {{ describeDamageBonus1H() }}
+      </p>
+      <p *ngIf="is2hView">
+        2H Damage Bonus: {{ computeDamageBonus2H() }} =>
+        {{ describeDamageBonus2H() }}
+      </p>
+      <p *ngIf="!is2hView">
+        1H Speed Bonus (Missile): {{ computeSpeedBonusMissile1H() }} => "No
+        description for now"
+      </p>
+      <p *ngIf="is2hView">
+        2H Speed Bonus (Missile): {{ computeSpeedBonusMissile2H() }} => "No
+        description for now"
+      </p>
+      <p *ngIf="!is2hView">
+        1H Speed Bonus (Melee): {{ computeSpeedBonusMelee1H() }} => "No
+        description for now"
+      </p>
+      <p *ngIf="is2hView">
+        2H Speed Bonus (Melee): {{ computeSpeedBonusMelee2H() }} => "No
+        description for now"
+      </p>
+      <p *ngIf="!is2hView">
+        1H Speed Bonus (Readied): {{ computeSpeedBonusReadied1H() }} => "No
+        description for now"
+      </p>
+      <p *ngIf="is2hView">
+        2H Speed Bonus (Readied): {{ computeSpeedBonusReadied2H() }} => "No
+        description for now"
+      </p>
+
+      <p>
+        Damage Roll: ({{
+          getSelectedInvItem().getActualProperty('Damage Dice')
+        }})/(d{{ getSelectedInvItem().getActualProperty('Dividing Die') }})
+      </p>
+    </mat-card-content>
+    <mat-card-content *ngIf="getSelectedInvItem().getCategory() == 'ARMOR'">
+      <p>
+        Classification:
+        {{ getSelectedInvItem().getActualProperty('Classification') }}
+      </p>
+      <p>Base AV: {{ getSelectedInvItem().getActualProperty('Base AV') }}</p>
+      <p>Base PR: {{ getSelectedInvItem().getActualProperty('Base PR') }}</p>
+    </mat-card-content>
+  </mat-card>
+</p>
+
+<p>
+  <span>NON-MAGICAL skills</span>
+</p>
+
+<mat-table matSort [dataSource]="normalSkills">
+  <ng-container matColumnDef="Skill Name">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Skill Name
+    </th>
+    <td mat-cell *matCellDef="let chosenSkill" align="center">
+      {{ skillNameLookup[chosenSkill.skillNode.getParameterizedName()] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Level">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Level
+    </th>
+    <td mat-cell *matCellDef="let chosenSkill" align="center">
+      {{ chosenSkill.level }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Total Points">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Total Points
+    </th>
+    <td mat-cell *matCellDef="let chosenSkill" align="center">
+      <b>
+        {{ getTotalPointsInSkill(chosenSkill, globals.currentCharacter) }}
+      </b>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Innate Points">
+    <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width">
+      Innate Points
+    </th>
+    <td mat-cell *matCellDef="let chosenSkill" align="center">
+      {{ getBasePointsInSkill(chosenSkill, globals.currentCharacter) }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Added Points">
+    <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width">
+      Added Points
+    </th>
+    <td mat-cell *matCellDef="let chosenSkill" align="center">
+      {{ chosenSkill.points }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Notes">
+    <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width">
+      Notes
+    </th>
+    <td mat-cell *matCellDef="let chosenSkill" align="center">
+      {{ chosenSkill.notes }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Edit">
+    <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width">
+      Edit
+    </th>
+    <td mat-cell *matCellDef="let chosenSkill" align="center">
+      <button mat-stroked-button (click)="openDialog(chosenSkill)">EDIT</button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="headers"></tr>
+  <tr mat-row *matRowDef="let myRowData; columns: headers"></tr>
+</mat-table>
+
+<p>
+  <span>MAGICAL skills</span>
+</p>
+<mat-table matSort [dataSource]="magicSkills">
+  <ng-container matColumnDef="Magic School">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Magic School
+    </th>
+    <td mat-cell *matCellDef="let schoolData" align="center">
+      {{ schoolData.name }} (lvl {{ getLevelOfSkill(schoolData.spKey) }})
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="Status">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      School Status
+    </th>
+    <td mat-cell *matCellDef="let schoolData" align="center">
+      {{ getStatusOfSchool(schoolData.spKey).name }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="SP">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Max SP
+    </th>
+    <td mat-cell *matCellDef="let schoolData" align="center">
+      <a
+        [title]="getDescriptionOfMagicSkill(schoolData.spKey, schoolData.spKey)"
+        [ngStyle]="{
+          color: getLevelOfSkill(schoolData.spKey) == 0 ? 'black' : 'green'
+        }"
+      >
+        {{ getPointsInMagicSkill(schoolData.spKey, schoolData.spKey) }}
+      </a>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="Reclamation">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Reclamation
+    </th>
+    <td mat-cell *matCellDef="let schoolData" align="center">
+      <a
+        [title]="schoolData.reclamationDescription"
+        [ngStyle]="{
+          color: getLevelOfSkill(schoolData.spKey) == 0 ? 'black' : 'green'
+        }"
+      >
+        {{ schoolData.reclamationPoints }}
+      </a>
+      <!-- <a
+        [title]="
+          getDescriptionOfMagicSkill(schoolData.spKey, schoolData.recKey)
+        "
+        [ngStyle]="{
+          color: getLevelOfSkill(schoolData.spKey) == 0 ? 'black' : 'green'
+        }"
+      >  {{ getPointsInMagicSkill(schoolData.spKey, schoolData.recKey) }}
+      </a>
+    --></td>
+  </ng-container>
+  <ng-container matColumnDef="Success">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Success
+    </th>
+    <td mat-cell *matCellDef="let schoolData" align="center">
+      <a
+        [title]="schoolData.successDescription"
+        [ngStyle]="{
+          color: getLevelOfSkill(schoolData.spKey) == 0 ? 'black' : 'green'
+        }"
+      >
+        {{ schoolData.successPoints }}
+      </a>
+      <!-- {{ schoolData.succKey }} -->
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="magicHeaders"></tr>
+  <tr mat-row *matRowDef="let myRowData; columns: magicHeaders"></tr>
+</mat-table>
+
+<p>
+  <span>Spellbook</span>
+</p>
+<mat-table matSort [dataSource]="spellbook">
+  <ng-container matColumnDef="select">
+    <!-- make this work for viewing spells like inventory items -->
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox
+        (change)="$event ? masterToggle() : null"
+        [checked]="selectedSpellbookItem.hasValue() && isAllSelected()"
+        [indeterminate]="selectedSpellbookItem.hasValue() && !isAllSelected()"
+        [aria-label]="checkboxLabel()"
+      >
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox
+        (click)="$event.stopPropagation()"
+        (change)="$event ? selectedSpellbookItem.toggle(row) : null"
+        [checked]="selectedSpellbookItem.isSelected(row)"
+        [aria-label]="checkboxLabel(row)"
+      >
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="School">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Magic School
+    </th>
+    <td mat-cell *matCellDef="let spellData" align="center">
+      {{ spellData.school.name }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="Name">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Spell Name
+    </th>
+    <td mat-cell *matCellDef="let spellData" align="center">
+      {{ spellData.spell['SPELL NAME'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Level">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Effective Level
+    </th>
+    <td mat-cell *matCellDef="let spellData" align="center">
+      {{ spellData.effectiveLevel }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="Description">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Description
+    </th>
+    <td mat-cell *matCellDef="let spellData" align="center">
+      {{ spellData.spell['DESCRIPTION'] }}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="spellbookHeaders"></tr>
+  <tr mat-row *matRowDef="let myRowData; columns: spellbookHeaders"></tr>
+</mat-table>
+<p>
+  <mat-card class="show-inventory-details" *ngIf="getSelectedSpell()">
+    <mat-card-subtitle>{{ getSelectedSpell().school.name }}</mat-card-subtitle>
+
+    <mat-card-title>{{
+      getSelectedSpell().spell['SPELL NAME']
+    }}</mat-card-title>
+  </mat-card>
+  <!--
+<div>
+  <div
+    class="md-padding"
+    layout="row"
+    layout-wrap
+    *ngFor="let chosenSkill of globals.currentCharacter.acquiredSkills"
+  >
+    <mat-card class="skill-card">
+      <mat-card-header>
+        <mat-card-title>{{
+          skillNameLookup[chosenSkill.skillNode.getParameterizedName()]
+        }}</mat-card-title>
+        <mat-card-subtitle
+          >LVL {{ chosenSkill.level }},
+          {{ getTotalPointsInSkill(chosenSkill, globals.currentCharacter) }} pts
+          ({{
+            getBasePointsInSkill(chosenSkill, globals.currentCharacter)
+          }}
+          innate + {{ chosenSkill.points }}
+          allocated)
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-actions class="bordered-button">
+        <button mat-stroked-button (click)="openDialog(chosenSkill)">
+          EDIT
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+--></p>

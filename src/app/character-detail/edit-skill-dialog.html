@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Edit Skill "{{getPrettyName()}}"</h1>
+
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Level</mat-label>
+    <input matInput [(ngModel)]="data.level">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Applied Points</mat-label>
+    <input matInput [(ngModel)]="data.points">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Notes</mat-label>
+    <input matInput [(ngModel)]="data.notes">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Update Skill</button>
+</div>

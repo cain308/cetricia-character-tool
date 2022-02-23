@@ -1,0 +1,313 @@
+<mat-form-field>
+  <mat-label>Filter Weapons</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Bow" />
+</mat-form-field>
+
+<mat-table matSort [dataSource]="sortedData" (matSortChange)="sortData($event)">
+  <ng-container matColumnDef="Name">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Name
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">{{ weapon.Name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="Cost ep">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Cost ep
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Cost ep'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Weight">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Weight
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon.Weight }}
+    </td></ng-container
+  >
+
+  <ng-container matColumnDef="Size">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Size
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">{{ weapon.Size }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="Range">
+    <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width">
+      Range
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">{{ weapon.Range }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="Speed, Missle">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Speed, Missle
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Speed, Missle'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Speed, Melee">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Speed, Melee
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Speed, Melee'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Speed, Readied">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Speed, Readied
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Speed, Readied'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Protection">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Protection
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon.Protection }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Threat Range">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Threat Range
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Threat Range'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="STN, 1H">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      STN, 1H
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['STN, 1H'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="STN, 2H">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      STN, 2H
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['STN, 2H'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="STMOD">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      STMOD
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['STMOD'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="CDN, 1H">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      CDN, 1H
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['CDN, 1H'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="CDN, 2H">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      CDN, 2H
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['CDN, 2H'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="CDMOD">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      CDMOD
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['CDMOD'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Damage Dice">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Damage Dice
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Damage Dice'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Dividing Die">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Dividing Die
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Dividing Die'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Real min">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Real min
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Real min'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Max Dam">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Max Dam
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Max Dam'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Av Dam">
+    <th
+      mat-header-cell
+      mat-sort-header
+      *matHeaderCellDef
+      class="stat-narrow-column-width"
+    >
+      Av Dam
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      {{ weapon['Av Dam'] }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Add">
+    <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width">
+      Add
+    </th>
+    <td mat-cell *matCellDef="let weapon" align="center">
+      <button mat-mini-fab color="primary" (click)="addWeapon(weapon)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+  <!--
+<ng-container matColumnDef="Remove" >
+  <th mat-header-cell *matHeaderCellDef class="stat-narrow-column-width"> Remove </th>
+  <td mat-cell *matCellDef="let weapon" align="center"> 
+    <button mat-mini-fab color="primary" [disabled]="shouldDisableButtonForSkill(skill)" (click)="addSkill(skill)">
+      <mat-icon>add</mat-icon>  
+    </button>
+  </td>
+</ng-container>
+-->
+
+  <tr mat-header-row *matHeaderRowDef="headers"></tr>
+  <tr mat-row *matRowDef="let myRowData; columns: headers"></tr>
+</mat-table>

@@ -1,0 +1,103 @@
+<style>
+  /*
+.mat-tree-node { 
+  min-height: 30px;
+}*/
+
+  .mat-tree-node {
+    min-height: 1.3em !important;
+    height: 1.3em;
+  }
+
+  .skill-category-box {
+    min-width: 60px;
+    /* width: 100px; */
+    padding-right: 5px;
+  }
+
+  .skill-name-box {
+    min-width: 60px;
+    padding-right: 5px;
+    font-weight: bold;
+  }
+</style>
+
+<!-- Not working yet... -->
+<mat-form-field>
+  <mat-label>Filter Skills</mat-label>
+  <input matInput placeholder="Bow">
+
+  <!--
+  <input matInput (keyup)="applyFilter($event)" placeholder="Bow">
+  -->
+</mat-form-field>
+
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" multiTemplateDataRows>
+  <!-- This is the tree node template for leaf nodes -->
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding multiTemplateDataRows>
+    <!-- use a disabled button to provide padding for tree leaf -->
+    <button mat-icon-button disabled></button>
+    <div style="display: flex">
+      <div class="skill-category-box">
+        {{ skillTypeLookup[node.skillNode.skill["Skill Type"]] }}:
+      </div>
+      <div class="skill-name-box">
+        <font [ngStyle]="{'color': node.isMissing ? 'red' : 'black'}">
+          {{skillNameLookup[node.name]}}
+        </font>
+      </div>
+      <div class="skill-name-box">
+        <font style="color: green">
+          <a [title]="describeModDetails(node.skillNode, globals.currentCharacter)">
+            Att Mod: {{ getTotalXPMods(node.skillNode, globals.currentCharacter) }} - Base Skill Points: {{
+            getInnateTalent(node.skillNode, globals.currentCharacter) }}
+          </a>
+        </font>
+      </div>
+    </div>
+  </mat-tree-node>
+  <!-- 
+    {{ !node.isMissing? skillTypeLookup[node.skillNode.skill["Skill Type"]] + ":" : ""}}
+  -->
+
+  <!-- This is the tree node template for expandable nodes -->
+  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding multiTemplateDataRows>
+    <button mat-icon-button matTreeNodeToggle
+            [attr.aria-label]="'toggle ' + node.name">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    <div style="display: flex">
+      <div class="skill-category-box">
+        {{ skillTypeLookup[node.skillNode.skill["Skill Type"]] }}:
+      </div>
+      <div class="skill-name-box">
+        {{skillNameLookup[node.name]}}
+      </div>
+      <div class="skill-name-box">
+        <font style="color: green">
+          <a [title]="describeModDetails(node.skillNode, globals.currentCharacter)">
+            Att Mod: {{ getTotalXPMods(node.skillNode, globals.currentCharacter) }} - Base Skill Points: {{
+            getInnateTalent(node.skillNode, globals.currentCharacter) }}
+          </a>
+        </font>
+      </div>
+
+
+    </div>
+
+  </mat-tree-node>
+
+</mat-tree>
+
+<!--
+<div *ngFor="let skill of allSkills">
+  <h4>
+      {{ skillTypeLookup[skill["Skill Type"]] }}: {{ skillNameLookup[skill["Skill Name"]] }} with modifier   <a [title]="describeModDetails(skill.ModDetails)">
+      {{ skill.ModDetails.total }}
+  </a>
+  </h4>
+</div>
+-->
+<h4> Skills Done </h4>
